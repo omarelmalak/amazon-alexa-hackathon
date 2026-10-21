@@ -60,10 +60,10 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 
 **Achieve**
 
-- `adapters/mcp` wrapping **existing** core interfaces
-- Streamable HTTP MCP (2025-11-25) over HTTPS tunnel
-- Alexa+ Developer Console → same tools proven via FastAPI
-- Fire TV / Echo display of the assembly UI
+- [x] `adapters/mcp` wrapping **existing** core interfaces
+- [x] Streamable HTTP MCP mounted at `/mcp` (same uvicorn process as FastAPI)
+- [ ] HTTPS tunnel (ngrok / similar) + Alexa+ Developer Console registration
+- [ ] Fire TV / Echo display of the assembly UI
 
 **Exit criteria:** Voice “check my assembly” hits the same `VisionInspector` path as `POST /v1/sessions/.../inspect/orientation`.
 
@@ -75,4 +75,4 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 |------|--------|
 | Real Stripe / Amazon Pay | After mock checkout is demo-solid |
 | YOLO weights | Optional; Canvas differencing is enough for Tier 1 demo |
-| MCP / ngrok | Phase 5 |
+| Alexa+ console wiring | After `/mcp` smoke passes locally |

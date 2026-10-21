@@ -36,7 +36,7 @@ We do **not** build MCP-shaped APIs first. Domain logic is isolated so HTTP and 
                       │                 │
            ┌──────────▼──────┐   ┌──────▼──────────┐
            │  adapters/http  │   │  adapters/mcp   │
-           │  (FastAPI)      │   │  (later)        │
+           │  (FastAPI)      │   │  (/mcp)         │
            └──────────┬──────┘   └──────┬──────────┘
                       │                 │
                       └────────┬────────┘
@@ -64,7 +64,7 @@ src/
     state/            # AssemblyState machine
   adapters/
     http/             # FastAPI routers → call core interfaces only
-    mcp/              # MCP tools → same core interfaces (Phase 5+)
+    mcp/              # Streamable HTTP MCP tools → same core interfaces
   infra/              # filesystem loaders, Cohere vision client, Stripe
 data/
   <productId>/        # ground-truth assets (not the API)

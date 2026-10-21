@@ -138,8 +138,24 @@ Returns a **mock** Stripe-style `checkoutUrl` + `orderId` (no real charge yet). 
 
 ---
 
-## Mapping to MCP (later)
+## Mapping to MCP (Phase 5)
 
-Each row above becomes a tool with the **same** core method — e.g. HTTP `GET …/steps/{n}` ↔ MCP `get_assembly_step(product_id, step_number)`. Tool handlers must not reimplement catalog or vision logic.
+Endpoint: `http://127.0.0.1:8000/mcp` (Streamable HTTP, same process as FastAPI).
 
-Transport for Alexa+: Streamable HTTP MCP (2025-11-25), exposed over HTTPS (e.g. ngrok) once FastAPI behavior is proven.
+| MCP tool | Same core path as |
+|----------|-------------------|
+| `list_products` | `GET /v1/products` |
+| `get_product` | `GET /v1/products/{id}` |
+| `list_bom` | `GET /v1/products/{id}/bom` |
+| `list_assembly_steps` | `GET /v1/products/{id}/steps` |
+| `get_assembly_step` | `GET /v1/products/{id}/steps/{n}` |
+| `ingest_product` | `POST /v1/products/ingest` |
+| `create_session` / `get_session` / `advance_session` | session routes |
+| `inspect_orientation` / `inspect_part` / `inspect_inventory` | inspect routes |
+| `order_replacement_parts` | `POST …/orders/replacement-parts` |
+
+Tool handlers must not reimplement catalog or vision logic — see `adapters/mcp/server.py`.
+
+Local smoke: with the server running, `PYTHONPATH=src python scripts/smoke_mcp.py`.
+
+For Alexa+: tunnel HTTPS to this host and register the MCP URL in the Developer Console.

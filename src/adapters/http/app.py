@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from adapters.http.routes_catalog import build_catalog_router
 from adapters.http.routes_ingest import build_ingest_router
 from adapters.http.routes_sessions import build_sessions_router
+from adapters.mcp import create_mcp_server, mount_mcp
 from core.services.catalog import FilesystemProductCatalog
 from core.services.ingest import IkeaManualIngester
 from core.services.ordering import MockStripePartsOrdering
@@ -32,10 +33,10 @@ def create_app(data_root: Path | None = None) -> FastAPI:
     ordering = MockStripePartsOrdering()
     app = FastAPI(
         title="IKEA Flatpack Co-Pilot",
-        version="0.4.0",
+        version="0.5.0",
         description=(
             "Catalog, ingest, sessions, Cohere vision, Tier-1 webcam UI, "
-            "and mock replacement-part checkout."
+            "mock replacement-part checkout, and Streamable HTTP MCP at /mcp."
         ),
     )
     app.include_router(build_catalog_router(catalog), prefix="/v1")
@@ -43,6 +44,9 @@ def create_app(data_root: Path | None = None) -> FastAPI:
     app.include_router(
         build_sessions_router(catalog, sessions, vision, ordering), prefix="/v1"
     )
+
+    mcp = create_mcp_server(catalog, ingester, sessions, vision, ordering)
+    mount_mcp(app, mcp)
 
     @app.get("/health")
     def health() -> dict[str, str]:

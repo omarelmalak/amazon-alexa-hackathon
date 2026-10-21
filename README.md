@@ -18,8 +18,8 @@ Business logic lives behind **stable interfaces** in a shared core. FastAPI and 
 
 ```
 core/          ← domain + interfaces (source of truth)
-adapters/http  ← FastAPI
-adapters/mcp   ← Streamable HTTP MCP (later)
+adapters/http  ← FastAPI (/v1, UI)
+adapters/mcp   ← Streamable HTTP MCP (/mcp)
 ```
 
 ## Local backend server
@@ -51,6 +51,7 @@ PYTHONPATH=src uvicorn adapters.http.app:app --reload --host 127.0.0.1 --port 80
 | Health | http://127.0.0.1:8000/health |
 | Interactive docs | http://127.0.0.1:8000/docs |
 | OpenAPI JSON | http://127.0.0.1:8000/openapi.json |
+| MCP (Streamable HTTP) | http://127.0.0.1:8000/mcp |
 
 `--reload` restarts the process when Python files change. Stop the server with `Ctrl+C`.
 
@@ -118,9 +119,24 @@ python scripts/prepare_manual.py path/to/manual.pdf \
 |-------|------|
 | **Alexa+** | Agent: understands “help me build my Kyrre stool”, picks the tool, passes `query=KYRRE` |
 | **Our backend** (`POST /v1/products/ingest`) | Searches IKEA, downloads the assembly PDF, slices diagrams, optional LLM enrich |
-| **Later: MCP adapter** | Same `ManualIngester.ingest` exposed as a Streamable HTTP MCP tool for Alexa+ |
+| **MCP adapter** (`/mcp`) | Same tools as HTTP — e.g. `ingest_product`, `get_assembly_step`, `inspect_orientation` |
 
-Alexa+ does **not** browse ikea.com or pull PDFs on its own unless you give it a tool that does that. **You need this ingest endpoint** (and later the MCP wrapper). To test today: curl / Swagger. To test with Alexa+: tunnel HTTPS + register the MCP tool once Phase 5 is wired — the agent just invokes `ingest` / `get_assembly_step`; it never scrapes.
+Alexa+ does **not** browse ikea.com or pull PDFs on its own. It calls our tools. Test HTTP with curl / Swagger; test MCP with `scripts/smoke_mcp.py`; for Alexa+ tunnel HTTPS (ngrok) to `/mcp` and register that URL in the Developer Console.
+
+### 7. MCP smoke (Phase 5)
+
+With the server running:
+
+```bash
+PYTHONPATH=src python scripts/smoke_mcp.py
+```
+
+Tunnel for Alexa+:
+
+```bash
+# example — point Alexa+ at https://<subdomain>.ngrok-free.app/mcp
+ngrok http 8000
+```
 
 ### 6. Vision inspect script (Phase 2, no UI)
 
@@ -141,4 +157,4 @@ curl -s -X POST http://127.0.0.1:8000/v1/sessions/$SESSION_ID/inspect/orientatio
 
 ## Status
 
-Phase 4: inventory scan + mock replacement-part checkout. Webcam UI at `/`. Next: MCP / Alexa+ (Phase 5).
+Phase 5 in progress: Streamable HTTP MCP at `/mcp` (same core as FastAPI). Next: HTTPS tunnel + Alexa+ console registration.
