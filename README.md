@@ -111,6 +111,23 @@ python scripts/prepare_manual.py path/to/manual.pdf \
 
 Alexa+ does **not** browse ikea.com or pull PDFs on its own unless you give it a tool that does that. **You need this ingest endpoint** (and later the MCP wrapper). To test today: curl / Swagger. To test with Alexa+: tunnel HTTPS + register the MCP tool once Phase 5 is wired — the agent just invokes `ingest` / `get_assembly_step`; it never scrapes.
 
+### 5. Vision inspect (Phase 2)
+
+```bash
+# Create a session for KYRRE
+curl -s -X POST http://127.0.0.1:8000/v1/sessions \
+  -H 'Content-Type: application/json' \
+  -d '{"productId":"kyrre"}' | python3 -m json.tool
+
+# Smoke-test Cohere dual-image inspect (diagram vs itself / flipped)
+python scripts/smoke_inspect.py kyrre 1
+
+# HTTP inspect (SESSION_ID from create; FRAME_B64 = base64 PNG/JPEG)
+curl -s -X POST http://127.0.0.1:8000/v1/sessions/$SESSION_ID/inspect/orientation \
+  -H 'Content-Type: application/json' \
+  -d "{\"frameBase64\":\"$FRAME_B64\"}" | python3 -m json.tool
+```
+
 ## Status
 
-Phase 1: KYRRE ground truth, FastAPI catalog reads, and `POST /v1/products/ingest` for name→manual ingestion.
+Phase 2 in progress: Cohere orientation inspect over sessions. Catalog + ingest from Phase 1 remain.

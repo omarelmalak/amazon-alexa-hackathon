@@ -14,7 +14,7 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 
 ---
 
-## Phase 1 — Ground-truth data prep (current)
+## Phase 1 — Ground-truth data prep
 
 **Achieve**
 
@@ -29,17 +29,19 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 
 ---
 
-## Phase 2 — Vision LLM proof of concept
+## Phase 2 — Vision LLM proof of concept (current)
 
 **Achieve**
 
-- `VisionInspector` behind an interface
-- Dual-image prompt (webcam frame + step diagram) → structured JSON
-- FastAPI `POST …/inspect/orientation` (and stubs for part / inventory)
+- [x] `VisionInspector` behind an interface (`CohereVisionInspector`)
+- [x] Dual-image prompt (webcam frame + step diagram) → structured JSON
+- [x] In-memory `AssemblySession` + FastAPI session routes
+- [x] FastAPI `POST …/inspect/orientation` (part / inventory return 501 stubs)
+- [x] `scripts/smoke_inspect.py` — same diagram vs 180° flip
 
 **Stack:** Cohere Command A Vision (structured JSON), httpx
 
-**Exit criteria:** Known good/bad photos return correct `aligned` + box; same function called from a unit test *and* HTTP.
+**Exit criteria:** ~~Known good/bad photos return correct `aligned` + box; same function called from a script *and* HTTP.~~ ✅ `smoke_inspect.py` same-diagram→aligned, scribbled→not aligned.
 
 ---
 

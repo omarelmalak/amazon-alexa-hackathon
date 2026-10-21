@@ -1,4 +1,11 @@
 from .catalog import FilesystemProductCatalog
 from .ingest import IkeaManualIngester
+from .session import InMemoryAssemblySession
+from .vision import CohereVisionInspector
 
-__all__ = ["FilesystemProductCatalog", "IkeaManualIngester"]
+__all__ = [
+    "CohereVisionInspector",
+    "FilesystemProductCatalog",
+    "IkeaManualIngester",
+    "InMemoryAssemblySession",
+]

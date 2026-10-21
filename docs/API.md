@@ -104,9 +104,16 @@ Orientation response:
 {
   "aligned": false,
   "errorDescription": "Bracket appears upside down; recessed groove faces up",
-  "boundingBox": { "x": 120, "y": 80, "w": 200, "h": 160 }
+  "boundingBox": { "x": 120, "y": 80, "w": 200, "h": 160 },
+  "confidence": 0.91,
+  "stepCompleted": false,
+  "rawNotes": null
 }
 ```
+
+`inspect/part` and `inspect/inventory` currently return **501** stubs.
+
+Local smoke test (no webcam needed): `python scripts/smoke_inspect.py kyrre 1`
 
 ---
 
