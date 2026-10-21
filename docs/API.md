@@ -32,9 +32,9 @@ Content-Type: application/json
 |-------|---------|
 | `query` | Product series/name spoken by the user |
 | `force` | Overwrite `data/<productId>/` if it already exists |
-| `enrich` | If true and `OPENAI_API_KEY` is set, vision-LLM fills names/titles/`completionHints` |
+| `enrich` | If true and `COHERE_API_KEY` is set, Command A Vision fills names/titles/`completionHints` from diagram PNGs |
 
-Pipeline: IKEA search API → product page → assembly PDF URL → download → `prepare_manual` slicer → optional LLM enrich → readable via catalog routes below.
+Pipeline: IKEA search API → product page → assembly PDF URL → download → `prepare_manual` slicer → optional Cohere vision enrich → readable via catalog routes below.
 
 ---
 

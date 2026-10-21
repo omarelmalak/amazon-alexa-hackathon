@@ -37,7 +37,7 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 - Dual-image prompt (webcam frame + step diagram) → structured JSON
 - FastAPI `POST …/inspect/orientation` (and stubs for part / inventory)
 
-**Stack:** OpenAI or Anthropic SDK, structured outputs
+**Stack:** Cohere Command A Vision (structured JSON), httpx
 
 **Exit criteria:** Known good/bad photos return correct `aligned` + box; same function called from a unit test *and* HTTP.
 

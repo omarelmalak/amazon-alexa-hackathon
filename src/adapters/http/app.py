@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from adapters.http.routes_catalog import build_catalog_router
@@ -11,6 +12,8 @@ from core.services.ingest import IkeaManualIngester
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DATA_ROOT = ROOT / "data"
+
+load_dotenv(ROOT / ".env")
 
 
 def create_app(data_root: Path | None = None) -> FastAPI:

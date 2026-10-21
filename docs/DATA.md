@@ -85,7 +85,7 @@ data/
 | Image trim (optional) | Pillow | Crop margins |
 | CLI | `scripts/prepare_manual.py` | Local PDF → diagrams + manifest |
 | HTTP ingest | `POST /v1/products/ingest` | Product name → IKEA search → PDF → same pipeline |
-| LLM enrich (optional) | OpenAI vision (`OPENAI_API_KEY`) | Fill names, titles, `completionHints` from diagrams |
+| LLM enrich (optional) | Cohere Command A Vision (`COHERE_API_KEY`) | Fill names, titles, `completionHints` from diagram PNGs (base64) |
 | Schema | Pydantic | Validate manifest before services load it |
 
 IKEA manuals are mostly wordless. Rasterize automatically; **curate** (or set `enrich=true`) for part names / completion hints. Web PDFs sometimes lack extractable text on BOM/step pages — diagrams are still sliced; enrichment recovers metadata from the images.

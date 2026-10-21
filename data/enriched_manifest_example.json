@@ -1,0 +1,63 @@
+{
+    "productId": "kyrre",
+    "displayName": "KYRRE",
+    "manualSource": "source/manual.pdf",
+    "bom": [
+        {
+            "partId": "130915",
+            "name": "hex socket screw",
+            "qty": 6
+        },
+        {
+            "partId": "100092",
+            "name": "allen key",
+            "qty": 1
+        },
+        {
+            "partId": "112357",
+            "name": "screw",
+            "qty": 3
+        }
+    ],
+    "steps": [
+        {
+            "number": 1,
+            "diagram": "diagrams/01.png",
+            "title": "Attach legs to seat",
+            "requiredHardware": [
+                {
+                    "partId": "130915",
+                    "name": "hex socket screw",
+                    "qty": 6
+                },
+                {
+                    "partId": "100092",
+                    "name": "allen key",
+                    "qty": 0
+                }
+            ],
+            "completionHints": [
+                "Tighten screws evenly",
+                "Ensure legs are level",
+                "Check for loose parts"
+            ]
+        },
+        {
+            "number": 2,
+            "diagram": "diagrams/02.png",
+            "title": "Secure backrest to seat",
+            "requiredHardware": [
+                {
+                    "partId": "112357",
+                    "name": "screw",
+                    "qty": 3
+                }
+            ],
+            "completionHints": [
+                "Align backrest with seat",
+                "Fasten screws in a diagonal pattern",
+                "Verify backrest is firmly attached"
+            ]
+        }
+    ]
+}

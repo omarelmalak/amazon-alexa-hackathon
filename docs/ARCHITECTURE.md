@@ -65,7 +65,7 @@ src/
   adapters/
     http/             # FastAPI routers → call core interfaces only
     mcp/              # MCP tools → same core interfaces (Phase 5+)
-  infra/              # filesystem loaders, OpenAI/Anthropic clients, Stripe
+  infra/              # filesystem loaders, Cohere vision client, Stripe
 data/
   <productId>/        # ground-truth assets (not the API)
 ```

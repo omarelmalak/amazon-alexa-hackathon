@@ -31,7 +31,11 @@ cd amazon-alexa-hackathon
 python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+cp .env.example .env               # optional — needed for Cohere enrich on ingest
+# Edit .env and set COHERE_API_KEY=...
 ```
+
+See [`.env.example`](.env.example) for supported variables.
 
 ### 2. Start the FastAPI server
 
@@ -71,17 +75,19 @@ Full route list: [docs/API.md](docs/API.md).
 Alexa+ will call this as a tool later. For now, exercise it over HTTP:
 
 ```bash
-# Deterministic slice only (no OpenAI key required)
+# Deterministic slice only (no Cohere key required)
 curl -s -X POST http://127.0.0.1:8000/v1/products/ingest \
   -H 'Content-Type: application/json' \
   -d '{"query":"KYRRE","enrich":false,"force":true}' | python3 -m json.tool
 
-# Same + vision-LLM curation of names / titles / completionHints
-export OPENAI_API_KEY=sk-...
+# Same + Cohere Command A Vision curation of names / titles / completionHints
+# (loads COHERE_API_KEY from .env when the server starts)
 curl -s -X POST http://127.0.0.1:8000/v1/products/ingest \
   -H 'Content-Type: application/json' \
   -d '{"query":"KYRRE","enrich":true,"force":true}' | python3 -m json.tool
 ```
+
+Diagrams are sent as `data:image/png;base64,...` — Cohere vision models accept that format and can read IKEA line art / part numbers (use `detail=high` in our client for small text).
 
 Then read it back with the catalog routes in step 3.
 
