@@ -8,11 +8,11 @@ Avoid streaming 30 FPS to a cloud LLM. Coordinate with an explicit state machine
 
 | | |
 |---|---|
-| **Stack** | OpenCV.js or lightweight YOLOv8 in browser/client |
-| **Rate** | Continuous 15–30 FPS |
-| **Job** | Draw boxes around hands, panels, screws — **no step awareness** |
-| **Trigger** | Stability (motion stopped ~1.2–1.5s) → wake Tier 2 |
-| **UI** | Live tracking overlays for responsiveness |
+| **Stack** | Canvas frame differencing in `frontend/tier1.js` (YOLO optional later) |
+| **Rate** | ~15 FPS analysis |
+| **Job** | Cyan motion boxes — **no step awareness** |
+| **Trigger** | Stability (motion stopped ~1.3s) → wake Tier 2 |
+| **UI** | Live overlays in `frontend/` served at `/` |
 
 ### Tier 2 — Multimodal spatial checker (cloud)
 

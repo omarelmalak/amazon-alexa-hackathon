@@ -47,14 +47,25 @@ PYTHONPATH=src uvicorn adapters.http.app:app --reload --host 127.0.0.1 --port 80
 
 | | |
 |---|---|
-| Base URL | http://127.0.0.1:8000 |
+| Assembly UI | http://127.0.0.1:8000/ |
 | Health | http://127.0.0.1:8000/health |
 | Interactive docs | http://127.0.0.1:8000/docs |
 | OpenAPI JSON | http://127.0.0.1:8000/openapi.json |
 
 `--reload` restarts the process when Python files change. Stop the server with `Ctrl+C`.
 
-### 3. Smoke-test catalog endpoints
+### 3. Phase 3 — webcam UI (Tier 1 + inspect)
+
+1. Start the server (step 2) with `COHERE_API_KEY` set.
+2. Open **http://127.0.0.1:8000/** in Chrome/Edge (allow camera).
+3. **Start session** (product `kyrre`).
+4. **Start camera**.
+5. Hold still ~1.3s → Tier‑1 marks stable → auto-calls `/inspect/orientation` → green/red overlay.
+6. Or click **Inspect now**.
+
+Tier‑1 is Canvas frame-differencing (cyan motion boxes), not YOLO yet. Tier‑2 is Cohere.
+
+### 4. Smoke-test catalog endpoints
 
 KYRRE ground truth is already under `data/kyrre/`. With the server running:
 
@@ -70,7 +81,7 @@ curl -o step1.png http://127.0.0.1:8000/v1/products/kyrre/steps/1/diagram
 
 Full route list: [docs/API.md](docs/API.md).
 
-### 4. Ingest a product by name (IKEA search → PDF → diagrams)
+### 5. Ingest a product by name (IKEA search → PDF → diagrams)
 
 Alexa+ will call this as a tool later. For now, exercise it over HTTP:
 
@@ -111,7 +122,7 @@ python scripts/prepare_manual.py path/to/manual.pdf \
 
 Alexa+ does **not** browse ikea.com or pull PDFs on its own unless you give it a tool that does that. **You need this ingest endpoint** (and later the MCP wrapper). To test today: curl / Swagger. To test with Alexa+: tunnel HTTPS + register the MCP tool once Phase 5 is wired — the agent just invokes `ingest` / `get_assembly_step`; it never scrapes.
 
-### 5. Vision inspect (Phase 2)
+### 6. Vision inspect script (Phase 2, no UI)
 
 ```bash
 # Create a session for KYRRE
@@ -130,4 +141,4 @@ curl -s -X POST http://127.0.0.1:8000/v1/sessions/$SESSION_ID/inspect/orientatio
 
 ## Status
 
-Phase 2 in progress: Cohere orientation inspect over sessions. Catalog + ingest from Phase 1 remain.
+Phase 4: inventory scan + mock replacement-part checkout. Webcam UI at `/`. Next: MCP / Alexa+ (Phase 5).

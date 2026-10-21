@@ -40,7 +40,18 @@ class PartIdentityResult(BaseModel):
     notes: str | None = None
 
 
+class PartCount(BaseModel):
+    partId: str
+    name: str = ""
+    expectedQty: int = 0
+    seenQty: int = 0
+    evidence: str | None = None
+
+
 class InventoryCountResult(BaseModel):
-    counted: list[dict] = Field(default_factory=list)
-    missing: list[dict] = Field(default_factory=list)
+    """Pure inspection result — does not create orders."""
+
+    counted: list[PartCount] = Field(default_factory=list)
+    missing: list[PartCount] = Field(default_factory=list)
+    extras: list[PartCount] = Field(default_factory=list)
     notes: str | None = None

@@ -5,35 +5,59 @@
   "bom": [
     {
       "partId": "130915",
-      "name": "",
+      "name": "hex socket screw",
       "qty": 6
+    },
+    {
+      "partId": "100092",
+      "name": "allen key",
+      "qty": 1
+    },
+    {
+      "partId": "112357",
+      "name": "plastic plug",
+      "qty": 3
     }
   ],
   "steps": [
     {
       "number": 1,
       "diagram": "diagrams/01.png",
-      "title": "Step 1",
+      "title": "Attach the legs to the seat",
       "requiredHardware": [
         {
           "partId": "130915",
-          "name": "",
+          "name": "hex socket screw",
           "qty": 6
         },
         {
           "partId": "100092",
-          "name": "",
+          "name": "allen key",
           "qty": 0
         }
       ],
-      "completionHints": []
+      "completionHints": [
+        "Ensure the screws are tightened evenly",
+        "Check that the legs are level and stable",
+        "Verify that the allen key is used correctly"
+      ]
     },
     {
       "number": 2,
       "diagram": "diagrams/02.png",
-      "title": "Step 2",
-      "requiredHardware": [],
-      "completionHints": []
+      "title": "Secure the backrest to the seat",
+      "requiredHardware": [
+        {
+          "partId": "112357",
+          "name": "screw",
+          "qty": 3
+        }
+      ],
+      "completionHints": [
+        "Ensure the backrest is aligned properly",
+        "Check that the screws are tightened securely",
+        "Verify that the backrest is stable and does not wobble"
+      ]
     }
   ]
 }

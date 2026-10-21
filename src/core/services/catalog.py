@@ -67,6 +67,15 @@ class FilesystemProductCatalog:
             raise StepNotFoundError(f"Diagram missing for step {step_number}: {step.diagram}")
         return diagram_path.read_bytes()
 
+    def get_bom_diagram(self, product_id: str) -> bytes:
+        product_dir = self._product_dir(product_id)
+        path = (product_dir / "diagrams" / "bom.png").resolve()
+        if not str(path).startswith(str(product_dir.resolve())) or not path.is_file():
+            raise ProductNotFoundError(
+                f"BOM diagram missing for product '{product_id}' (expected diagrams/bom.png)"
+            )
+        return path.read_bytes()
+
     def _product_dir(self, product_id: str) -> Path:
         path = self._data_root / product_id
         if not path.is_dir() or not (path / "manifest.json").is_file():

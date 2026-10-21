@@ -111,9 +111,14 @@ Orientation response:
 }
 ```
 
-`inspect/part` and `inspect/inventory` currently return **501** stubs.
-
 Local smoke test (no webcam needed): `python scripts/smoke_inspect.py kyrre 1`
+
+Also: `GET /v1/products/{productId}/bom/diagram` → BOM overview PNG.
+
+**Inspect vs order are separate:**
+
+1. `POST …/inspect/inventory` → `{ counted, missing, extras, notes }` only (never charges / never creates an order)
+2. `POST …/orders/replacement-parts` → client sends explicit `items[]` (typically derived from `missing`) to create a mock checkout
 
 ---
 
@@ -122,6 +127,14 @@ Local smoke test (no webcam needed): `python scripts/smoke_inspect.py kyrre 1`
 | Method | Path | Core call |
 |--------|------|-----------|
 | `POST` | `/v1/sessions/{sessionId}/orders/replacement-parts` | `PartsOrdering.create_replacement_order` |
+
+```json
+{
+  "items": [{ "partId": "112357", "name": "plastic plug", "qty": 1, "unitPriceCents": 299 }]
+}
+```
+
+Returns a **mock** Stripe-style `checkoutUrl` + `orderId` (no real charge yet). Does **not** re-run vision.
 
 ---
 

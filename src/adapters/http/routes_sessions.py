@@ -8,18 +8,21 @@ from core.models.assembly import (
     SessionResponse,
     SessionUpdateRequest,
 )
-from core.models.vision import InspectFrameRequest, OrientationResult
+from core.models.ordering import ReplacementOrderRequest, ReplacementOrderResult
+from core.models.vision import (
+    InspectFrameRequest,
+    InventoryCountResult,
+    OrientationResult,
+    PartIdentityResult,
+)
 from core.services.catalog import (
     FilesystemProductCatalog,
     ProductNotFoundError,
     StepNotFoundError,
 )
+from core.services.ordering import MockStripePartsOrdering
 from core.services.session import InMemoryAssemblySession, SessionNotFoundError
-from core.services.vision import (
-    CohereVisionInspector,
-    VisionNotImplementedError,
-    decode_frame_base64,
-)
+from core.services.vision import CohereVisionInspector, decode_frame_base64
 from infra.cohere_client import CohereError
 
 
@@ -27,7 +30,9 @@ def build_sessions_router(
     catalog: FilesystemProductCatalog,
     sessions: InMemoryAssemblySession,
     vision: CohereVisionInspector,
+    ordering: MockStripePartsOrdering | None = None,
 ) -> APIRouter:
+    ordering = ordering or MockStripePartsOrdering()
     router = APIRouter(tags=["sessions"])
 
     @router.post("/sessions", response_model=SessionResponse)
@@ -112,21 +117,94 @@ def build_sessions_router(
         except CohereError as exc:
             raise HTTPException(status_code=502, detail=str(exc)) from exc
 
-    @router.post("/sessions/{session_id}/inspect/part")
-    def inspect_part(session_id: str, body: InspectFrameRequest) -> dict:
-        raise HTTPException(
-            status_code=501,
-            detail="identify_part not implemented yet (Phase 2 stub)",
-        )
+    @router.post(
+        "/sessions/{session_id}/inspect/part",
+        response_model=PartIdentityResult,
+    )
+    def inspect_part(session_id: str, body: InspectFrameRequest) -> PartIdentityResult:
+        try:
+            state = sessions.get_state(session_id)
+            step = catalog.get_step(
+                state.productId, body.stepNumber or state.currentStep
+            )
+            bom = catalog.get_bom(state.productId)
+            frame = decode_frame_base64(body.frameBase64)
+            sessions.update(
+                session_id,
+                SessionUpdateRequest(activeMode=AssemblyMode.INSPECTING_PART),
+            )
+            result = vision.identify_part(
+                frame_bytes=frame,
+                step=step,
+                product_id=state.productId,
+                bom=bom,
+            )
+            sessions.update(
+                session_id,
+                SessionUpdateRequest(activeMode=AssemblyMode.IDLE_MONITORING),
+            )
+            return result
+        except SessionNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except (ProductNotFoundError, StepNotFoundError) as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except CohereError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
 
-    @router.post("/sessions/{session_id}/inspect/inventory")
-    def inspect_inventory(session_id: str, body: InspectFrameRequest) -> dict:
-        raise HTTPException(
-            status_code=501,
-            detail="count_parts not implemented yet (Phase 2 stub)",
-        )
+    @router.post(
+        "/sessions/{session_id}/inspect/inventory",
+        response_model=InventoryCountResult,
+        summary="Inspect hardware only — returns counted/missing, never places an order",
+    )
+    def inspect_inventory(
+        session_id: str, body: InspectFrameRequest
+    ) -> InventoryCountResult:
+        try:
+            state = sessions.get_state(session_id)
+            bom = catalog.get_bom(state.productId)
+            frame = decode_frame_base64(body.frameBase64)
+            sessions.update(
+                session_id,
+                SessionUpdateRequest(activeMode=AssemblyMode.COUNTING),
+            )
+            result = vision.count_parts(
+                frame_bytes=frame,
+                bom=bom,
+                product_id=state.productId,
+            )
+            sessions.update(
+                session_id,
+                SessionUpdateRequest(activeMode=AssemblyMode.IDLE_MONITORING),
+            )
+            return result
+        except SessionNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ProductNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except CohereError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
 
-    # Silence unused for now — stubs will use vision later
-    _ = VisionNotImplementedError
+    @router.post(
+        "/sessions/{session_id}/orders/replacement-parts",
+        response_model=ReplacementOrderResult,
+        summary="Separate checkout endpoint — pass explicit line items (e.g. from a prior inventory missing[])",
+    )
+    def order_replacement_parts(
+        session_id: str, body: ReplacementOrderRequest
+    ) -> ReplacementOrderResult:
+        """Does not re-run vision. Client decides what to order after inspecting."""
+        try:
+            state = sessions.get_state(session_id)
+            return ordering.create_replacement_order(
+                product_id=state.productId,
+                session_id=session_id,
+                request=body,
+            )
+        except SessionNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
 
     return router

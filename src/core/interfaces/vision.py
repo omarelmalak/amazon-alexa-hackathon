@@ -22,6 +22,7 @@ class VisionInspector(Protocol):
         frame_bytes: bytes,
         step: Step,
         product_id: str,
+        bom: list | None = None,
     ) -> PartIdentityResult: ...
 
     def count_parts(

@@ -16,54 +16,43 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 
 ## Phase 1 — Ground-truth data prep
 
-**Achieve**
-
-- [x] CLI that slices an IKEA PDF into per-step diagrams (`scripts/prepare_manual.py`)
-- [x] `manifest.json` + `diagrams/*.png` for **KYRRE** stool
-- [x] `ProductCatalog` + `FilesystemProductCatalog`
-- [x] FastAPI **read** endpoints for products / steps / BOM / diagram
-
-**Stack:** Python, PyMuPDF, Pillow, Pydantic, FastAPI
-
-**Exit criteria:** ~~`curl` can fetch step 2 metadata and its PNG without mentioning `.json` or file paths.~~ ✅ Verified for KYRRE.
+- [x] CLI PDF → diagrams + manifest
+- [x] KYRRE ground truth
+- [x] `ProductCatalog` + FastAPI catalog reads
+- [x] `POST /v1/products/ingest` (IKEA search → PDF → slice + optional Cohere enrich)
 
 ---
 
-## Phase 2 — Vision LLM proof of concept (current)
+## Phase 2 — Vision LLM proof of concept
 
-**Achieve**
-
-- [x] `VisionInspector` behind an interface (`CohereVisionInspector`)
-- [x] Dual-image prompt (webcam frame + step diagram) → structured JSON
-- [x] In-memory `AssemblySession` + FastAPI session routes
-- [x] FastAPI `POST …/inspect/orientation` (part / inventory return 501 stubs)
-- [x] `scripts/smoke_inspect.py` — same diagram vs 180° flip
-
-**Stack:** Cohere Command A Vision (structured JSON), httpx
-
-**Exit criteria:** ~~Known good/bad photos return correct `aligned` + box; same function called from a script *and* HTTP.~~ ✅ `smoke_inspect.py` same-diagram→aligned, scribbled→not aligned.
+- [x] `VisionInspector` + Cohere dual-image orientation
+- [x] In-memory sessions
+- [x] `POST …/inspect/orientation`
+- [x] `scripts/smoke_inspect.py`
 
 ---
 
-## Phase 3 — Assembly session + Tier 1 client
+## Phase 3 — Tier 1 webcam client
 
-**Achieve**
-
-- In-memory (then durable) `AssemblySession` / state machine
-- Browser HTML/JS: webcam, OpenCV/Canvas stability trigger, overlay boxes
-- Client calls FastAPI only
-
-**Exit criteria:** Idle monitoring → stability → inspect → UI paints red/green box.
+- [x] UI at `/` (`frontend/`)
+- [x] Canvas stability + motion boxes
+- [x] Auto/manual inspect → green/red overlay
+- [x] Test match/mismatch without a physical stool
 
 ---
 
-## Phase 4 — Purchasing + orchestration polish
+## Phase 4 — Purchasing + inventory (current)
 
 **Achieve**
 
-- `PartsOrdering` + replacement-part endpoint
-- Inventory inspect wired to “order missing part?” flow
-- Auto-advance when vision marks step complete
+- [x] `PartsOrdering` (`MockStripePartsOrdering`)
+- [x] `POST …/orders/replacement-parts`
+- [x] `POST …/inspect/inventory` + `…/inspect/part` (Cohere)
+- [x] `GET …/bom/diagram`
+- [x] UI: scan BOM / demo missing / order missing
+- [x] Auto-advance on orientation `stepCompleted` (Phase 3)
+
+**Exit criteria:** Session can report missing hardware and create a mock checkout URL.
 
 ---
 
@@ -84,6 +73,6 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 
 | Item | Until |
 |------|--------|
-| MCP / SSE / ngrok | Phase 5 (after HTTP green) |
-| Full YOLO training | Optional; start with OpenCV stability + LLM |
-| Multi-product scale | After one product (VATTENKAR or RISATORP) is demo-ready |
+| Real Stripe / Amazon Pay | After mock checkout is demo-solid |
+| YOLO weights | Optional; Canvas differencing is enough for Tier 1 demo |
+| MCP / ngrok | Phase 5 |

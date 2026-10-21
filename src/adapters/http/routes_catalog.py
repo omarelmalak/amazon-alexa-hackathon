@@ -31,6 +31,14 @@ def build_catalog_router(catalog: FilesystemProductCatalog) -> APIRouter:
         except ProductNotFoundError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
 
+    @router.get("/products/{product_id}/bom/diagram")
+    def get_bom_diagram(product_id: str) -> Response:
+        try:
+            png = catalog.get_bom_diagram(product_id)
+        except ProductNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        return Response(content=png, media_type="image/png")
+
     @router.get("/products/{product_id}/steps", response_model=list[Step])
     def list_steps(product_id: str) -> list[Step]:
         try:

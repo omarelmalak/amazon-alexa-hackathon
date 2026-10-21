@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flatpack Co-Pilot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;560;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="top">
+        <div class="brand">
+          <span class="brand-mark">FP</span>
+          <div>
+            <h1>Flatpack Co-Pilot</h1>
+            <p class="tag">Manual inspect buttons · optional stability auto-check</p>
+          </div>
+        </div>
+        <div class="top-status" id="connectionStatus">API idle</div>
+      </header>
+
+      <main class="layout">
+        <section class="stage" aria-label="Webcam stage">
+          <div class="stage-frame">
+            <video id="webcam" playsinline autoplay muted></video>
+            <canvas id="overlay"></canvas>
+            <div class="stage-hud">
+              <span id="modeBadge" class="badge">IDLE</span>
+              <span id="stabilityMeter" class="meter">auto-inspect off</span>
+            </div>
+          </div>
+
+          <div class="stage-actions">
+            <button type="button" id="btnStartCam" class="btn primary">Start camera</button>
+            <label class="toggle">
+              <input type="checkbox" id="autoInspect" />
+              Auto-inspect on stability
+            </label>
+          </div>
+
+          <div class="action-groups">
+            <div class="action-group">
+              <h3>Orientation</h3>
+              <div class="row">
+                <button type="button" id="btnInspectOrientation" class="btn" disabled>
+                  Inspect (webcam)
+                </button>
+                <button type="button" id="btnTestMatch" class="btn" disabled>
+                  Test: match diagram
+                </button>
+                <button type="button" id="btnTestMismatch" class="btn" disabled>
+                  Test: mismatch
+                </button>
+              </div>
+            </div>
+
+            <div class="action-group">
+              <h3>Identify part</h3>
+              <div class="row">
+                <button type="button" id="btnInspectPart" class="btn" disabled>
+                  Identify (webcam)
+                </button>
+                <button type="button" id="btnTestPartBom" class="btn" disabled>
+                  Test: from BOM image
+                </button>
+              </div>
+            </div>
+
+            <div class="action-group">
+              <h3>Inventory inspect</h3>
+              <div class="row">
+                <button type="button" id="btnInspectInventory" class="btn" disabled>
+                  Scan (webcam)
+                </button>
+                <button type="button" id="btnScanBom" class="btn" disabled>
+                  Test: scan BOM
+                </button>
+                <button type="button" id="btnDemoMissing" class="btn" disabled>
+                  Demo: 1 missing
+                </button>
+              </div>
+            </div>
+
+            <div class="action-group">
+              <h3>Order (separate endpoint)</h3>
+              <div class="row">
+                <button type="button" id="btnOrderMissing" class="btn" disabled>
+                  Order missing parts
+                </button>
+              </div>
+              <p class="hint-line">
+                Uses <code>POST …/orders/replacement-parts</code> with items from the last
+                inventory <code>missing[]</code> — inspect never places an order.
+              </p>
+            </div>
+          </div>
+
+          <p class="hint-line">
+            Stability auto-inspect is <strong>off by default</strong>. Use the buttons above
+            to fire each Cohere inspect path. Webcam buttons need the camera; Test buttons do not.
+          </p>
+        </section>
+
+        <aside class="panel">
+          <section class="card-block">
+            <h2>Session</h2>
+            <label class="field">
+              Product
+              <select id="productSelect"></select>
+            </label>
+            <div class="row">
+              <button type="button" id="btnStartSession" class="btn primary">
+                Start session
+              </button>
+              <button type="button" id="btnAdvance" class="btn" disabled>Next step</button>
+            </div>
+            <dl class="meta" id="sessionMeta">
+              <div><dt>Session</dt><dd id="metaSession">—</dd></div>
+              <div><dt>Step</dt><dd id="metaStep">—</dd></div>
+              <div><dt>Mode</dt><dd id="metaMode">—</dd></div>
+              <div><dt>Done</dt><dd id="metaDone">—</dd></div>
+            </dl>
+          </section>
+
+          <section class="card-block">
+            <h2>Manual diagram</h2>
+            <div class="diagram-wrap">
+              <img id="stepDiagram" alt="Current step diagram" />
+              <p id="stepTitle" class="step-title">Select a product and start a session.</p>
+            </div>
+            <ul id="hintsList" class="hints"></ul>
+          </section>
+
+          <section class="card-block">
+            <h2>Last inspect</h2>
+            <pre id="inspectOut" class="inspect-out">Press an inspect button to run a check.</pre>
+          </section>
+
+          <section class="card-block">
+            <h2>Inventory / order</h2>
+            <pre id="inventoryOut" class="inspect-out">Scan inventory or use Demo: 1 missing.</pre>
+            <p id="orderOut" class="hint-line"></p>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script type="module" src="/static/app.js"></script>
+  </body>
+</html>
