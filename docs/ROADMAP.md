@@ -4,28 +4,28 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 
 ---
 
-## Phase 0 — Docs & contracts (current)
+## Phase 0 — Docs & contracts
 
 - [x] Product journeys
 - [x] Architecture (core / http / mcp)
 - [x] Data layout vs API naming
 - [x] FastAPI resource design
-- [ ] Repo skeleton (`src/core`, `adapters/http`, `data/`) — next coding step
+- [x] Repo skeleton (`src/core`, `adapters/http`, `data/`)
 
 ---
 
-## Phase 1 — Ground-truth data prep
+## Phase 1 — Ground-truth data prep (current)
 
 **Achieve**
 
-- CLI that slices an IKEA PDF into per-step diagrams
-- `manifest.json` + `diagrams/*.png` for one product
-- `ProductCatalog` implementation that reads that layout
-- FastAPI **read** endpoints for products / steps / BOM / diagram
+- [x] CLI that slices an IKEA PDF into per-step diagrams (`scripts/prepare_manual.py`)
+- [x] `manifest.json` + `diagrams/*.png` for **KYRRE** stool
+- [x] `ProductCatalog` + `FilesystemProductCatalog`
+- [x] FastAPI **read** endpoints for products / steps / BOM / diagram
 
 **Stack:** Python, PyMuPDF, Pillow, Pydantic, FastAPI
 
-**Exit criteria:** `curl` can fetch step 2 metadata and its PNG without mentioning `.json` or file paths.
+**Exit criteria:** ~~`curl` can fetch step 2 metadata and its PNG without mentioning `.json` or file paths.~~ ✅ Verified for KYRRE.
 
 ---
 

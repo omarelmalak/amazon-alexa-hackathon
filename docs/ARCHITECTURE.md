@@ -77,9 +77,12 @@ Adapters depend on these — never on filesystem paths or “`.json`” filename
 | Interface | Responsibility |
 |-----------|----------------|
 | `ProductCatalog` | List products; load BOM; load step metadata; resolve diagram bytes |
+| `ManualIngester` | Product name → IKEA search → PDF download → diagrams + manifest (+ optional LLM enrich) |
 | `AssemblySession` | Get/update `AssemblyState`; advance step; set mode |
 | `VisionInspector` | Verify orientation / part ID / inventory from a frame + step context |
 | `PartsOrdering` | Start replacement-part purchase (Stripe / Amazon) |
+
+**Alexa+ note:** The agent calls `ManualIngester` (via HTTP today, MCP later). It does not scrape IKEA itself.
 
 **Rule:** FastAPI route handlers and MCP tool handlers only translate I/O ↔ interface calls. No duplicate business logic.
 

@@ -7,6 +7,37 @@ API prefix: `/v1`
 
 ---
 
+## Ingest (find + download + process)
+
+Alexa+ / agents should call this tool — they do **not** scrape IKEA themselves.
+
+| Method | Path | Core call | Notes |
+|--------|------|-----------|-------|
+| `POST` | `/v1/products/ingest` | `ManualIngester.ingest` | Search IKEA → PDF → diagrams + manifest |
+
+```http
+POST /v1/products/ingest
+Content-Type: application/json
+
+{
+  "query": "KYRRE",
+  "market": "us",
+  "locale": "en",
+  "force": false,
+  "enrich": true
+}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `query` | Product series/name spoken by the user |
+| `force` | Overwrite `data/<productId>/` if it already exists |
+| `enrich` | If true and `OPENAI_API_KEY` is set, vision-LLM fills names/titles/`completionHints` |
+
+Pipeline: IKEA search API → product page → assembly PDF URL → download → `prepare_manual` slicer → optional LLM enrich → readable via catalog routes below.
+
+---
+
 ## Catalog (reads ground truth)
 
 | Method | Path | Core call | Returns |
@@ -21,19 +52,19 @@ API prefix: `/v1`
 ### Example
 
 ```http
-GET /v1/products/vattenkar/steps/2
+GET /v1/products/kyrre/steps/2
 ```
 
 ```json
 {
-  "productId": "vattenkar",
+  "productId": "kyrre",
   "number": 2,
-  "title": "Attach side bracket",
+  "title": "Insert plastic plugs",
   "requiredHardware": [
-    { "partId": "114794", "name": "hex bolt", "qty": 2 }
+    { "partId": "112357", "name": "plastic plug", "qty": 3 }
   ],
-  "completionHints": ["holes facing inward"],
-  "diagramUrl": "/v1/products/vattenkar/steps/2/diagram"
+  "completionHints": ["one plastic plug seated at each leg junction"],
+  "diagramUrl": "/v1/products/kyrre/steps/2/diagram"
 }
 ```
 

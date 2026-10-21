@@ -28,38 +28,41 @@ Avoid naming both “steps” at the top level on disk so the mental model stays
 
 ```
 data/
-  vattenkar/
+  kyrre/                      # first product (IKEA stool)
     source/
-      manual.pdf              # original IKEA PDF (optional to keep)
+      manual.pdf
     diagrams/
-      bom.png                 # optional hardware overview page
+      cover.png               # optional product cover
+      bom.png                 # hardware overview page
       01.png
       02.png
-      …
-    manifest.json             # product contract for the loader
+    manifest.json
 ```
 
 ### `manifest.json` shape (loader contract, not URL)
 
 ```json
 {
-  "productId": "vattenkar",
-  "displayName": "VATTENKAR",
+  "productId": "kyrre",
+  "displayName": "KYRRE",
   "manualSource": "source/manual.pdf",
   "bom": [
-    { "partId": "114794", "name": "hex bolt", "qty": 6 }
+    { "partId": "130915", "name": "hex socket screw", "qty": 6 },
+    { "partId": "100092", "name": "allen key", "qty": 1 },
+    { "partId": "112357", "name": "plastic plug", "qty": 3 }
   ],
   "steps": [
     {
       "number": 1,
       "diagram": "diagrams/01.png",
-      "title": "Attach side bracket",
+      "title": "Attach legs to seat",
       "requiredHardware": [
-        { "partId": "114794", "name": "hex bolt", "qty": 2 }
+        { "partId": "130915", "name": "hex socket screw", "qty": 6 },
+        { "partId": "100092", "name": "allen key", "qty": 1 }
       ],
       "completionHints": [
-        "side panel attached",
-        "pre-drilled holes facing inward"
+        "three legs fastened to underside of seat",
+        "screw heads flush with wood"
       ]
     }
   ]
@@ -78,9 +81,11 @@ data/
 
 | Piece | Choice | Role |
 |-------|--------|------|
-| PDF → PNG | PyMuPDF (`fitz`) | Render pages at controlled DPI |
+| PDF → PNG | PyMuPDF | Render pages at controlled DPI |
 | Image trim (optional) | Pillow | Crop margins |
-| CLI | Python (`typer` or `argparse`) | `prepare-manual data/vattenkar/…` |
-| Schema check (optional) | Pydantic | Validate manifest before services load it |
+| CLI | `scripts/prepare_manual.py` | Local PDF → diagrams + manifest |
+| HTTP ingest | `POST /v1/products/ingest` | Product name → IKEA search → PDF → same pipeline |
+| LLM enrich (optional) | OpenAI vision (`OPENAI_API_KEY`) | Fill names, titles, `completionHints` from diagrams |
+| Schema | Pydantic | Validate manifest before services load it |
 
-IKEA manuals are mostly wordless → rasterize automatically; **curate** part IDs / qty in the manifest once. Full OCR of every fastener is out of scope for Phase 1.
+IKEA manuals are mostly wordless. Rasterize automatically; **curate** (or set `enrich=true`) for part names / completion hints. Web PDFs sometimes lack extractable text on BOM/step pages — diagrams are still sliced; enrichment recovers metadata from the images.
