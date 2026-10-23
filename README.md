@@ -8,16 +8,31 @@
 
 <br>
 
-[![YouTube Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)]([https://youtu.be/REPLACE_WITH_VIDEO_ID](https://www.youtube.com/watch?v=Xu1BMuj8GXA))
+[![YouTube Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=Xu1BMuj8GXA)
 &nbsp;
-[![Devpost](https://img.shields.io/badge/Devpost-Submission-003E54?style=for-the-badge&logo=devpost&logoColor=white)]([https://devpost.com/software/REPLACE_WITH_PROJECT](https://devpost.com/software/alexa-ikea-furniture-mcp-integration))
+[![Devpost](https://img.shields.io/badge/Devpost-Submission-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/software/alexa-ikea-furniture-mcp-integration)
+&nbsp;
+![MCP](https://img.shields.io/badge/MCP-2025--11--25-00A4EF?style=for-the-badge)
+&nbsp;
+![Alexa+](https://img.shields.io/badge/Track-Alexa%2B-232F3E?style=for-the-badge&logo=amazon&logoColor=white)
+&nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+<br>
+
+[▶ Demo video](https://www.youtube.com/watch?v=Xu1BMuj8GXA)
+&nbsp;·&nbsp;
+[Devpost project](https://devpost.com/software/alexa-ikea-furniture-mcp-integration)
+&nbsp;·&nbsp;
+Streamable HTTP MCP
+&nbsp;·&nbsp;
+Demo product **KYRRE**
 
 <br>
 
 Built by **Omar El Malak**
 &nbsp;·&nbsp;
-[@omarelmalak](https://www.github.com/omarelmalak)
+[@omarelmalak](https://github.com/omarelmalak)
 &nbsp;·&nbsp;
 Amazon Developer Hackathon 2026
 
