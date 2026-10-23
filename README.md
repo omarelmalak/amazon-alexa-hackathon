@@ -2,7 +2,7 @@
 
 # Amazon Alexa+ Ikea Furniture MCP Integration
 
-**Alexa+** assembly agent for IKEA flatpacks — MCP tools, camera vision, and short spoken guidance.
+**Alexa+** assembly agent for IKEA builds!
 
 <img src="docs/screenshots/banner.jpg" alt="Alexa+ × IKEA — MCP assembly co-pilot" width="920">
 
@@ -10,7 +10,7 @@
 
 [![YouTube Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)]([https://youtu.be/REPLACE_WITH_VIDEO_ID](https://www.youtube.com/watch?v=Xu1BMuj8GXA))
 &nbsp;
-[![Devpost](https://img.shields.io/badge/Devpost-Submission-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/software/REPLACE_WITH_PROJECT)
+[![Devpost](https://img.shields.io/badge/Devpost-Submission-003E54?style=for-the-badge&logo=devpost&logoColor=white)]([https://devpost.com/software/REPLACE_WITH_PROJECT](https://devpost.com/software/alexa-ikea-furniture-mcp-integration))
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 <br>
