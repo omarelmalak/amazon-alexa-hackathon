@@ -1,6 +1,6 @@
-# IKEA Flatpack Co-Pilot
+# Amazon Alexa+ Ikea Furniture MCP Integration!
 
-Autonomous assembly assistant for the **Amazon Alexa+ / Fire TV Developer Hackathon**. Helps people assemble IKEA furniture (demo product: **KYRRE**) with:
+Autonomous assembly assistant for the **Amazon Alexa+ Developer Hackathon**. Helps people assemble IKEA furniture (demo product: **KYRRE**) with:
 
 - Voice-style Alexa+ chat UI (hands-free mic + TTS)
 - Camera vision (orientation, part ID, inventory)
