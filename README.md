@@ -1,4 +1,4 @@
-# Amazon Alexa+ Ikea Furniture MCP Integration!
+# Amazon Alexa+ Ikea Furniture MCP Integration
 
 Autonomous assembly assistant for the **Amazon Alexa+ Developer Hackathon**. Helps people assemble IKEA furniture (demo product: **KYRRE**) with:
 
