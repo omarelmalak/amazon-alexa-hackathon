@@ -15,19 +15,9 @@
 
 <br>
 
-[▶ Demo video](https://youtu.be/REPLACE_WITH_VIDEO_ID)
-&nbsp;·&nbsp;
-[Devpost project](https://devpost.com/software/REPLACE_WITH_PROJECT)
-&nbsp;·&nbsp;
-Streamable HTTP MCP
-&nbsp;·&nbsp;
-Demo product **KYRRE**
-
-<br>
-
 Built by **Omar El Malak**
 &nbsp;·&nbsp;
-[@omarelmalak](https://github.com/omarelmalak)
+[@omarelmalak](https://www.github.com/omarelmalak)
 &nbsp;·&nbsp;
 Amazon Developer Hackathon 2026
 
