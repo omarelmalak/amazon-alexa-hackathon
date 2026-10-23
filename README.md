@@ -1,13 +1,46 @@
+<div align="center">
+
 # Amazon Alexa+ Ikea Furniture MCP Integration
 
-Autonomous assembly assistant for the **Amazon Alexa+ Developer Hackathon**. Helps people assemble IKEA furniture (demo product: **KYRRE**) with:
+**Alexa+** assembly agent for IKEA flatpacks — MCP tools, camera vision, and short spoken guidance.
 
-- Voice-style Alexa+ chat UI (hands-free mic + TTS)
-- Camera vision (orientation, part ID, inventory)
-- Agentic MCP host (Cohere picks tools; same tools as Streamable HTTP MCP)
-- Simulated IKEA spare-parts ordering + Taskrabbit Tasker booking
+<img src="docs/screenshots/banner.jpg" alt="Alexa+ × IKEA — MCP assembly co-pilot" width="920">
 
-MCP protocol target: **Streamable HTTP, spec `2025-11-25`**.
+<br>
+
+[![YouTube Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/REPLACE_WITH_VIDEO_ID)
+&nbsp;
+[![Devpost](https://img.shields.io/badge/Devpost-Submission-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/software/REPLACE_WITH_PROJECT)
+&nbsp;
+![MCP](https://img.shields.io/badge/MCP-2025--11--25-00A4EF?style=for-the-badge)
+&nbsp;
+![Alexa+](https://img.shields.io/badge/Track-Alexa%2B-232F3E?style=for-the-badge&logo=amazon&logoColor=white)
+&nbsp;
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+<br>
+
+[▶ Demo video](https://youtu.be/REPLACE_WITH_VIDEO_ID)
+&nbsp;·&nbsp;
+[Devpost project](https://devpost.com/software/REPLACE_WITH_PROJECT)
+&nbsp;·&nbsp;
+Streamable HTTP MCP
+&nbsp;·&nbsp;
+Demo product **KYRRE**
+
+<br>
+
+Built by **Omar El Malak**
+&nbsp;·&nbsp;
+[@omarelmalak](https://github.com/omarelmalak)
+&nbsp;·&nbsp;
+Amazon Developer Hackathon 2026
+
+</div>
+
+---
+
+Voice-style **Alexa+** chat (mic + TTS), camera vision (orientation / part ID / inventory), an agentic MCP host (Cohere + the same tools as `/mcp`), and simulated IKEA spare-parts + Taskrabbit booking.
 
 ---
 
@@ -380,3 +413,9 @@ Hackathon-ready demo path:
 3. Say / type you want to build **KYRRE** → parts check → steps → camera inspect → optional spare-parts or Taskrabbit mocks
 
 For Alexa+ console: tunnel HTTPS to `/mcp` (e.g. ngrok) and register the Streamable HTTP URL with protocol version **`2025-11-25`**.
+
+---
+
+## License
+
+This project is open source under the [MIT License](LICENSE). GitHub should show **MIT** in the repository About section.
