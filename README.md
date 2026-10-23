@@ -8,14 +8,9 @@
 
 <br>
 
-[![YouTube Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/REPLACE_WITH_VIDEO_ID)
+[![YouTube Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)]([https://youtu.be/REPLACE_WITH_VIDEO_ID](https://www.youtube.com/watch?v=Xu1BMuj8GXA))
 &nbsp;
 [![Devpost](https://img.shields.io/badge/Devpost-Submission-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/software/REPLACE_WITH_PROJECT)
-&nbsp;
-![MCP](https://img.shields.io/badge/MCP-2025--11--25-00A4EF?style=for-the-badge)
-&nbsp;
-![Alexa+](https://img.shields.io/badge/Track-Alexa%2B-232F3E?style=for-the-badge&logo=amazon&logoColor=white)
-&nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 <br>
