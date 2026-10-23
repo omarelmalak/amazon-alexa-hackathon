@@ -23,6 +23,8 @@ class VisionInspector(Protocol):
         step: Step,
         product_id: str,
         bom: list | None = None,
+        reference_images: dict[str, bytes] | None = None,
+        detect_prompt: str | None = None,
     ) -> PartIdentityResult: ...
 
     def count_parts(
@@ -31,4 +33,6 @@ class VisionInspector(Protocol):
         frame_bytes: bytes,
         bom: list,
         product_id: str,
+        reference_images: dict[str, bytes] | None = None,
+        detect_prompt: str | None = None,
     ) -> InventoryCountResult: ...

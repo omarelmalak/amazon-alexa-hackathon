@@ -1,6 +1,6 @@
 from .catalog import FilesystemProductCatalog
 from .ingest import IkeaManualIngester
-from .ordering import MockStripePartsOrdering
+from .ordering import MockIkeaSparePartsOrdering, MockStripePartsOrdering
 from .session import InMemoryAssemblySession
 from .vision import CohereVisionInspector
 
@@ -9,5 +9,6 @@ __all__ = [
     "FilesystemProductCatalog",
     "IkeaManualIngester",
     "InMemoryAssemblySession",
+    "MockIkeaSparePartsOrdering",
     "MockStripePartsOrdering",
 ]

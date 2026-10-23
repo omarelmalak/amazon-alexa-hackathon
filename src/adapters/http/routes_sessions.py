@@ -8,7 +8,12 @@ from core.models.assembly import (
     SessionResponse,
     SessionUpdateRequest,
 )
-from core.models.ordering import ReplacementOrderRequest, ReplacementOrderResult
+from core.models.ordering import (
+    ReplacementOrderRequest,
+    ReplacementOrderResult,
+    TaskrabbitBookingRequest,
+    TaskrabbitBookingResult,
+)
 from core.models.vision import (
     InspectFrameRequest,
     InventoryCountResult,
@@ -20,7 +25,7 @@ from core.services.catalog import (
     ProductNotFoundError,
     StepNotFoundError,
 )
-from core.services.ordering import MockStripePartsOrdering
+from core.services.ordering import MockIkeaSparePartsOrdering
 from core.services.session import InMemoryAssemblySession, SessionNotFoundError
 from core.services.vision import CohereVisionInspector, decode_frame_base64
 from infra.cohere_client import CohereError
@@ -30,15 +35,15 @@ def build_sessions_router(
     catalog: FilesystemProductCatalog,
     sessions: InMemoryAssemblySession,
     vision: CohereVisionInspector,
-    ordering: MockStripePartsOrdering | None = None,
+    ordering: MockIkeaSparePartsOrdering | None = None,
 ) -> APIRouter:
-    ordering = ordering or MockStripePartsOrdering()
+    ordering = ordering or MockIkeaSparePartsOrdering()
     router = APIRouter(tags=["sessions"])
 
     @router.post("/sessions", response_model=SessionResponse)
     def create_session(body: SessionCreateRequest) -> SessionResponse:
         try:
-            session_id, state = sessions.create(body.productId)
+            session_id, state, _reused = sessions.create(body.productId)
         except ProductNotFoundError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
         return SessionResponse(sessionId=session_id, state=state)
@@ -133,11 +138,17 @@ def build_sessions_router(
                 session_id,
                 SessionUpdateRequest(activeMode=AssemblyMode.INSPECTING_PART),
             )
+            ref_ids = [h.partId for h in (step.requiredHardware or bom)]
+            refs = catalog.get_reference_images(state.productId, ref_ids)
+            if not refs:
+                refs = catalog.get_reference_images(state.productId)
             result = vision.identify_part(
                 frame_bytes=frame,
                 step=step,
                 product_id=state.productId,
                 bom=bom,
+                reference_images=refs,
+                detect_prompt=body.detectPrompt,
             )
             sessions.update(
                 session_id,
@@ -169,10 +180,15 @@ def build_sessions_router(
                 session_id,
                 SessionUpdateRequest(activeMode=AssemblyMode.COUNTING),
             )
+            refs = catalog.get_reference_images(
+                state.productId, [h.partId for h in bom]
+            )
             result = vision.count_parts(
                 frame_bytes=frame,
                 bom=bom,
                 product_id=state.productId,
+                reference_images=refs,
+                detect_prompt=body.detectPrompt,
             )
             sessions.update(
                 session_id,
@@ -191,18 +207,47 @@ def build_sessions_router(
     @router.post(
         "/sessions/{session_id}/orders/replacement-parts",
         response_model=ReplacementOrderResult,
-        summary="Separate checkout endpoint — pass explicit line items (e.g. from a prior inventory missing[])",
+        summary=(
+            "Simulated IKEA spare-parts order — pass line items from inventory missing[]"
+        ),
     )
     def order_replacement_parts(
         session_id: str, body: ReplacementOrderRequest
     ) -> ReplacementOrderResult:
-        """Does not re-run vision. Client decides what to order after inspecting."""
+        """Does not re-run vision. Mock confirmed order + IKEA spare-parts link."""
         try:
             state = sessions.get_state(session_id)
+            bom_names = {
+                h.partId: (h.name or "")
+                for h in catalog.get_bom(state.productId)
+            }
             return ordering.create_replacement_order(
                 product_id=state.productId,
                 session_id=session_id,
                 request=body,
+                bom_names=bom_names,
+            )
+        except SessionNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ProductNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @router.post(
+        "/sessions/{session_id}/orders/taskrabbit",
+        response_model=TaskrabbitBookingResult,
+        summary="Simulated Taskrabbit Tasker booking for in-person assembly help",
+    )
+    def book_taskrabbit_help(
+        session_id: str, body: TaskrabbitBookingRequest
+    ) -> TaskrabbitBookingResult:
+        """Mock confirmed Tasker visit — no real Taskrabbit charge."""
+        try:
+            state = sessions.get_state(session_id)
+            return ordering.book_taskrabbit_help(
+                product_id=state.productId,
+                session_id=session_id,
+                request=body,
+                step_number=state.currentStep,
             )
         except SessionNotFoundError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc

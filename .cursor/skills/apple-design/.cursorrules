@@ -1,0 +1,22 @@
+# apple-design skill triggers
+
+When reviewing or improving UI/UX in this repo, follow the Apple HIG process in
+`.cursor/skills/apple-design/SKILL.md` (not a copy here).
+
+1. Read `SKILL.md` in full — principles, five audit lenses, report format, improvement process.
+2. Read `references/hig-lookup.md` to pick guideline files.
+3. Load `references/hig/accessibility.md`, `layout.md`, `typography.md`, `color.md`, plus the
+   platform overview (`designing-for-ios.md` or `designing-for-macos.md`), and
+   `references/cross-platform.md` unless the app is SwiftUI/UIKit/AppKit. Then load 3–6 more
+   files for what is on screen. Never load the whole directory.
+4. Cite every recommendation as `file.md › Heading` with a short quote.
+5. Use the user’s framework vocabulary (React, Vite, Flutter, React Native, Tauri, Electron,
+   SwiftUI, UIKit, AppKit).
+6. Tag findings Critical / High / Medium / Low; use the SKILL.md report format.
+7. Cite a guideline or label judgment; never invent one. Strong designs get short reviews.
+8. For code reviews or Apple Pay surfaces, follow `references/code-audit.md` and cite path:line.
+
+Trigger when the user asks to: review a design, audit UI/UX, check accessibility, improve a
+layout, implement Liquid Glass or glassmorphism, make a design less generic, review icons or
+widgets, audit a codebase, or evaluate any visual / interaction design — including the Alexa+
+hackathon demo frontend.

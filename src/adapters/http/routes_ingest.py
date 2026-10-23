@@ -3,7 +3,12 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException
 
 from core.models.ingest import IngestRequest, IngestResult
-from core.services.ingest import IkeaLookupError, IkeaManualIngester, ProductExistsError
+from core.services.ingest import (
+    IkeaLookupError,
+    IkeaManualIngester,
+    InvalidProductQueryError,
+    ProductExistsError,
+)
 
 
 def build_ingest_router(ingester: IkeaManualIngester) -> APIRouter:
@@ -22,6 +27,8 @@ def build_ingest_router(ingester: IkeaManualIngester) -> APIRouter:
         """
         try:
             return ingester.ingest(body)
+        except InvalidProductQueryError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
         except ProductExistsError as exc:
             raise HTTPException(status_code=409, detail=str(exc)) from exc
         except IkeaLookupError as exc:

@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, Response
 from core.models.catalog import HardwarePart, ProductManifest, ProductSummary, Step
 from core.services.catalog import (
     FilesystemProductCatalog,
+    PartNotFoundError,
     ProductNotFoundError,
     StepNotFoundError,
 )
@@ -69,6 +70,34 @@ def build_catalog_router(catalog: FilesystemProductCatalog) -> APIRouter:
         except ProductNotFoundError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
         except StepNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        return Response(content=png, media_type="image/png")
+
+    @router.get("/products/{product_id}/parts")
+    def list_parts(product_id: str) -> dict:
+        try:
+            ids = catalog.list_part_images(product_id)
+        except ProductNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        return {
+            "productId": product_id,
+            "partIds": ids,
+            "parts": [
+                {
+                    "partId": pid,
+                    "imageUrl": f"/v1/products/{product_id}/parts/{pid}",
+                }
+                for pid in ids
+            ],
+        }
+
+    @router.get("/products/{product_id}/parts/{part_id}")
+    def get_part_image(product_id: str, part_id: str) -> Response:
+        try:
+            png = catalog.get_part_image(product_id, part_id)
+        except ProductNotFoundError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except PartNotFoundError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
         return Response(content=png, media_type="image/png")
 

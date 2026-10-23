@@ -15,7 +15,7 @@
     },
     {
       "partId": "112357",
-      "name": "plastic plug",
+      "name": "plastic push plug",
       "qty": 3
     }
   ],
@@ -37,26 +37,26 @@
         }
       ],
       "completionHints": [
-        "Ensure the screws are tightened evenly",
-        "Check that the legs are level and stable",
-        "Verify that the allen key is used correctly"
+        "Legs stand in place against the seat as the diagram shows",
+        "Screws sit in the matched leg and seat holes",
+        "Seat face matches the diagram"
       ]
     },
     {
       "number": 2,
       "diagram": "diagrams/02.png",
-      "title": "Secure the backrest to the seat",
+      "title": "Push in the three plastic plugs",
       "requiredHardware": [
         {
           "partId": "112357",
-          "name": "screw",
+          "name": "plastic push plug",
           "qty": 3
         }
       ],
       "completionHints": [
-        "Ensure the backrest is aligned properly",
-        "Check that the screws are tightened securely",
-        "Verify that the backrest is stable and does not wobble"
+        "Press each plug straight down through the leg into the seat",
+        "Use a finger or soft push — no allen key needed",
+        "Confirm all three plugs sit flush"
       ]
     }
   ]

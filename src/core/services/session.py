@@ -21,10 +21,20 @@ class InMemoryAssemblySession:
         self._sessions: dict[str, AssemblyState] = {}
         self._lock = Lock()
 
-    def create(self, product_id: str) -> tuple[str, AssemblyState]:
+    def create(
+        self, product_id: str, *, reuse: bool = True
+    ) -> tuple[str, AssemblyState, bool]:
+        """Return (session_id, state, reused)."""
         product = self._catalog.get_product(product_id)
         if not product.steps:
             raise ProductNotFoundError(f"Product '{product_id}' has no assembly steps")
+
+        if reuse:
+            existing = self.find_latest_for_product(product.productId)
+            if existing is not None:
+                sid, state = existing
+                return sid, state, True
+
         first = product.steps[0]
         state = AssemblyState(
             productId=product.productId,
@@ -36,11 +46,47 @@ class InMemoryAssemblySession:
         session_id = uuid.uuid4().hex
         with self._lock:
             self._sessions[session_id] = state
-        return session_id, state
+        return session_id, state, False
+
+    def find_latest_for_product(self, product_id: str) -> tuple[str, AssemblyState] | None:
+        """Return the most recently created open session for this product, if any."""
+        pid = product_id.strip().lower()
+        with self._lock:
+            matches = [
+                (sid, state)
+                for sid, state in self._sessions.items()
+                if state.productId.lower() == pid
+            ]
+        if not matches:
+            return None
+        # dict preserves insertion order — last match is newest
+        sid, state = matches[-1]
+        return sid, state.model_copy(deep=True)
+
+    def resolve_session_id(self, session_or_product: str) -> str:
+        """
+        Accept a real session UUID, or a productId / series name mistaken for one.
+        Raises SessionNotFoundError if nothing matches.
+        """
+        key = (session_or_product or "").strip()
+        if not key:
+            raise SessionNotFoundError("Empty session id")
+        with self._lock:
+            if key in self._sessions:
+                return key
+            # Case-insensitive session id
+            for sid in self._sessions:
+                if sid.lower() == key.lower():
+                    return sid
+        found = self.find_latest_for_product(key)
+        if found is not None:
+            return found[0]
+        raise SessionNotFoundError(f"Session '{session_or_product}' not found")
 
     def get_state(self, session_id: str) -> AssemblyState:
+        resolved = self.resolve_session_id(session_id)
         with self._lock:
-            state = self._sessions.get(session_id)
+            state = self._sessions.get(resolved)
         if state is None:
             raise SessionNotFoundError(f"Session '{session_id}' not found")
         return state.model_copy(deep=True)

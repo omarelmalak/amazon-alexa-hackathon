@@ -9,7 +9,10 @@ from pathlib import Path
 import httpx
 
 COHERE_CHAT_URL = "https://api.cohere.ai/v2/chat"
+# Vision inspect / enrich must use Command A Vision (image inputs).
 DEFAULT_VISION_MODEL = "command-a-vision-07-2025"
+# Agent + text tools can use Command A+ (stronger reasoning / tool use).
+DEFAULT_TEXT_MODEL = "command-a-plus-05-2026"
 
 
 class CohereError(RuntimeError):
@@ -35,6 +38,14 @@ def get_vision_model(explicit: str | None = None) -> str:
         or os.environ.get("COHERE_VISION_MODEL")
         or os.environ.get("COHERE_ENRICH_MODEL")
         or DEFAULT_VISION_MODEL
+    )
+
+
+def get_text_model(explicit: str | None = None) -> str:
+    return (
+        explicit
+        or os.environ.get("COHERE_TEXT_MODEL")
+        or DEFAULT_TEXT_MODEL
     )
 
 
@@ -65,6 +76,46 @@ def chat_json(
     payload = {
         "model": get_vision_model(model),
         "messages": [{"role": "user", "content": content}],
+        "temperature": temperature,
+        "response_format": {"type": "json_object"},
+    }
+    with httpx.Client(timeout=timeout) as client:
+        response = client.post(
+            COHERE_CHAT_URL,
+            headers={
+                "Authorization": f"Bearer {key}",
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+            json=payload,
+        )
+        if response.status_code >= 400:
+            raise CohereError(
+                f"Cohere API error {response.status_code}: {response.text[:500]}"
+            )
+        body = response.json()
+
+    raw = _extract_text(body)
+    return _parse_json_payload(raw)
+
+
+def chat_text_json(
+    *,
+    system: str,
+    user: str,
+    api_key: str | None = None,
+    model: str | None = None,
+    temperature: float = 0.2,
+    timeout: float = 60.0,
+) -> dict:
+    """Text-only Cohere chat returning a parsed JSON object."""
+    key = get_cohere_api_key(api_key)
+    payload = {
+        "model": get_text_model(model),
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
         "temperature": temperature,
         "response_format": {"type": "json_object"},
     }

@@ -1,0 +1,82 @@
+:root {
+  --bg-deep: #050a14;
+  --bg-mid: #0a1628;
+  --cyan: #00caff;
+  --cyan-soft: rgba(0, 202, 255, 0.35);
+  --cyan-glow: rgba(0, 202, 255, 0.55);
+  --text: #f5f8fc;
+  --text-muted: rgba(245, 248, 252, 0.62);
+  --glass: rgba(18, 28, 44, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-strong: rgba(22, 34, 52, 0.78);
+  --dock-active: rgba(0, 202, 255, 0.28);
+  --chip: rgba(20, 30, 48, 0.72);
+  --font: 'Manrope', 'Amazon Ember', system-ui, sans-serif;
+  --radius-pill: 999px;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg-deep);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.ask-bar :focus-visible {
+  outline: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass: rgba(14, 22, 36, 0.96);
+    --glass-strong: rgba(14, 22, 36, 0.98);
+    --chip: rgba(14, 22, 36, 0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -127,6 +127,7 @@ Also: `GET /v1/products/{productId}/bom/diagram` → BOM overview PNG.
 | Method | Path | Core call |
 |--------|------|-----------|
 | `POST` | `/v1/sessions/{sessionId}/orders/replacement-parts` | `PartsOrdering.create_replacement_order` |
+| `POST` | `/v1/sessions/{sessionId}/orders/taskrabbit` | `PartsOrdering.book_taskrabbit_help` |
 
 ```json
 {
@@ -134,7 +135,22 @@ Also: `GET /v1/products/{productId}/bom/diagram` → BOM overview PNG.
 }
 ```
 
-Returns a **mock** Stripe-style `checkoutUrl` + `orderId` (no real charge yet). Does **not** re-run vision.
+Returns a **simulated IKEA spare-parts** `checkoutUrl` + `orderId` (no real charge —
+IKEA’s public APO API is lookup-only / often Cloudflare-gated; US online spare-parts
+checkout is limited). Does **not** re-run vision.
+
+Taskrabbit (in-person help):
+
+```json
+{
+  "task": "Furniture assembly",
+  "notes": "Stuck pushing in the plastic plugs on step 2",
+  "urgency": "today"
+}
+```
+
+Returns a **simulated Taskrabbit** `bookingId`, tasker, arrival window, and
+`checkoutUrl` (no real charge).
 
 ---
 
@@ -153,6 +169,7 @@ Endpoint: `http://127.0.0.1:8000/mcp` (Streamable HTTP, same process as FastAPI)
 | `create_session` / `get_session` / `advance_session` | session routes |
 | `inspect_orientation` / `inspect_part` / `inspect_inventory` | inspect routes |
 | `order_replacement_parts` | `POST …/orders/replacement-parts` |
+| `book_taskrabbit_help` | `POST …/orders/taskrabbit` |
 
 Tool handlers must not reimplement catalog or vision logic — see `adapters/mcp/server.py`.
 

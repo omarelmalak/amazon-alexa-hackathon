@@ -11,6 +11,15 @@ __pycache__/
 .env.*
 !.env.example
 
+# Detector weights downloaded at runtime
+*.pt
+weights/
+runs/
+
+# Node / Alexa+ demo UI
+node_modules/
+web/node_modules/
+
 # Ephemeral ingest test packages (keep curated data/kyrre/)
 data/kyrre-web/
 data/kyrre-api/

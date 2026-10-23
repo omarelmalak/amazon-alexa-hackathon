@@ -3,6 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 
 from core.models.catalog import HardwarePart, ProductManifest, ProductSummary, Step
+from infra.parts_library import (
+    PartImageNotFoundError,
+    get_part_image_bytes,
+    list_part_image_ids,
+    load_reference_images,
+)
 
 
 class ProductNotFoundError(LookupError):
@@ -10,6 +16,10 @@ class ProductNotFoundError(LookupError):
 
 
 class StepNotFoundError(LookupError):
+    pass
+
+
+class PartNotFoundError(LookupError):
     pass
 
 
@@ -75,6 +85,23 @@ class FilesystemProductCatalog:
                 f"BOM diagram missing for product '{product_id}' (expected diagrams/bom.png)"
             )
         return path.read_bytes()
+
+    def list_part_images(self, product_id: str) -> list[str]:
+        return list_part_image_ids(self._product_dir(product_id))
+
+    def get_part_image(self, product_id: str, part_id: str) -> bytes:
+        try:
+            return get_part_image_bytes(self._product_dir(product_id), part_id)
+        except PartImageNotFoundError as exc:
+            raise PartNotFoundError(str(exc)) from exc
+
+    def get_reference_images(
+        self, product_id: str, part_ids: list[str] | None = None
+    ) -> dict[str, bytes]:
+        product_dir = self._product_dir(product_id)
+        if part_ids is None:
+            part_ids = list_part_image_ids(product_dir)
+        return load_reference_images(product_dir, part_ids)
 
     def _product_dir(self, product_id: str) -> Path:
         path = self._data_root / product_id

@@ -1,0 +1,33 @@
+---
+description: How to discover and apply project Agent Skills under .cursor/skills/
+alwaysApply: true
+---
+
+# Project skills
+
+Design and domain skills live under `.cursor/skills/<skill-name>/`. Each skill is self-contained:
+
+| Path | Role |
+| --- | --- |
+| `SKILL.md` | When to use the skill, process, and report format |
+| `references/` | Source material the skill cites (load selectively) |
+| `scripts/` | Optional helpers for regenerating references |
+| `.cursorrules` | Optional skill-local trigger notes (same process as SKILL.md) |
+
+## How to use a skill
+
+1. Match the user request to a skill via its `SKILL.md` frontmatter `description`.
+2. Read that skill’s `SKILL.md` in full before acting.
+3. Follow its load rules (usually a small always-load set + a few topic files). Never dump an entire `references/` tree into context.
+4. Cite recommendations the way the skill asks (file + heading, path:line for code audits, etc.).
+
+## Adding a new skill
+
+1. Create `.cursor/skills/<kebab-name>/`.
+2. Add `SKILL.md` with YAML frontmatter (`name`, `description`) and the process body.
+3. Put supporting docs under `references/` and optional tools under `scripts/`.
+4. Keep skill-local triggers in that folder’s `.cursorrules` if helpful; do not hard-code skill lists into this file—discovery is by directory.
+
+## Current skills
+
+- `apple-design` — Apple HIG + craft design review for UI/UX (web, React, React Native, desktop). Use whenever building or polishing the Alexa+ demo UI, glass/blur surfaces, dark immersive chrome, or accessibility.

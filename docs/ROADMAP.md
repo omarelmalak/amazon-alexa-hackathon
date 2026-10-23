@@ -45,7 +45,7 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 
 **Achieve**
 
-- [x] `PartsOrdering` (`MockStripePartsOrdering`)
+- [x] `PartsOrdering` (`MockIkeaSparePartsOrdering` — APO lookup + simulated checkout)
 - [x] `POST …/orders/replacement-parts`
 - [x] `POST …/inspect/inventory` + `…/inspect/part` (Cohere)
 - [x] `GET …/bom/diagram`
@@ -62,10 +62,11 @@ Principle: **core interfaces first → FastAPI validation → MCP adapters**. Do
 
 - [x] `adapters/mcp` wrapping **existing** core interfaces
 - [x] Streamable HTTP MCP mounted at `/mcp` (same uvicorn process as FastAPI)
-- [ ] HTTPS tunnel (ngrok / similar) + Alexa+ Developer Console registration
-- [ ] Fire TV / Echo display of the assembly UI
+- [x] Web MCP client simulator at `/sim` (hackathon path — real initialize/tools/list/tools/call)
+- [ ] Optional: HTTPS tunnel (ngrok) for remote judges
+- [ ] Optional: Fire TV / Echo display of the assembly UI
 
-**Exit criteria:** Voice “check my assembly” hits the same `VisionInspector` path as `POST /v1/sessions/.../inspect/orientation`.
+**Exit criteria:** Simulated “check my assembly” hits the same `VisionInspector` path as `POST /v1/sessions/.../inspect/orientation` via MCP `inspect_orientation`.
 
 ---
 
