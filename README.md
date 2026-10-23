@@ -410,7 +410,7 @@ Hackathon-ready demo path:
 
 1. `./scripts/build.sh`
 2. Open http://127.0.0.1:8000/?debug=1
-3. Say / type you want to build **KYRRE** → parts check → steps → camera inspect → optional spare-parts or Taskrabbit mocks
+3. Say / type you want to build **KYRRE** (or any other Ikea product) → parts check → steps → camera inspect → optional spare-parts or Taskrabbit mocks
 
 For Alexa+ console: tunnel HTTPS to `/mcp` (e.g. ngrok) and register the Streamable HTTP URL with protocol version **`2025-11-25`**.
 
